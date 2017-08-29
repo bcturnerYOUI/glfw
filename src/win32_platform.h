@@ -124,6 +124,13 @@ typedef enum PROCESS_DPI_AWARENESS
     PROCESS_SYSTEM_DPI_AWARE = 1,
     PROCESS_PER_MONITOR_DPI_AWARE = 2
 } PROCESS_DPI_AWARENESS;
+typedef enum MONITOR_DPI_TYPE
+{
+    MDT_EFFECTIVE_DPI = 0,
+    MDT_ANGULAR_DPI = 1,
+    MDT_RAW_DPI = 2,
+    MDT_DEFAULT = MDT_EFFECTIVE_DPI
+} MONITOR_DPI_TYPE;
 #endif /*DPI_ENUMS_DECLARED*/
 
 // HACK: Define macros that some xinput.h variants don't
@@ -188,7 +195,9 @@ typedef HRESULT (WINAPI * PFN_DwmFlush)(VOID);
 
 // shcore.dll function pointer typedefs
 typedef HRESULT (WINAPI * PFN_SetProcessDpiAwareness)(PROCESS_DPI_AWARENESS);
-#define _glfw_SetProcessDpiAwareness _glfw.win32.shcore.SetProcessDpiAwareness
+typedef HRESULT (WINAPI * PFN_GetDpiForMonitor)(HMONITOR,MONITOR_DPI_TYPE,UINT*,UINT*);
+#define SetProcessDpiAwareness _glfw.win32.shcore.SetProcessDpiAwareness_
+#define GetDpiForMonitor _glfw.win32.shcore.GetDpiForMonitor_
 
 typedef VkFlags VkWin32SurfaceCreateFlagsKHR;
 
@@ -292,7 +301,12 @@ typedef struct _GLFWlibraryWin32
 
     struct {
         HINSTANCE                       instance;
+<<<<<<< HEAD
         PFN_SetProcessDpiAwareness      SetProcessDpiAwareness;
+=======
+        PFN_SetProcessDpiAwareness      SetProcessDpiAwareness_;
+        PFN_GetDpiForMonitor            GetDpiForMonitor_;
+>>>>>>> 16bf8721... Add content scale queries
     } shcore;
 
 } _GLFWlibraryWin32;
@@ -350,5 +364,6 @@ void _glfwInitTimerWin32(void);
 void _glfwPollMonitorsWin32(void);
 GLFWbool _glfwSetVideoModeWin32(_GLFWmonitor* monitor, const GLFWvidmode* desired);
 void _glfwRestoreVideoModeWin32(_GLFWmonitor* monitor);
+void _glfwGetMonitorContentScaleWin32(HMONITOR handle, float* xscale, float* yscale);
 
 #endif // _glfw3_win32_platform_h_

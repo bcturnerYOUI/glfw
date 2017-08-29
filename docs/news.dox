@@ -24,6 +24,34 @@ GLFW now supports changing the [GLFW_DECORATED](@ref GLFW_DECORATED_attrib),
 [GLFW_AUTO_ICONIFY](@ref GLFW_AUTO_ICONIFY_attrib) attributes for existing
 windows with @ref glfwSetWindowAttrib.
 
+@see @ref window_attribs
+
+
+@subsection news_33_contentscale Content scale queries for DPI-aware rendering
+
+GLFW now supports querying the window and monitor content scale, i.e. the ratio
+between the current DPI and the platform's default DPI, with @ref
+glfwGetWindowContentScale and @ref glfwGetMonitorContentScale.
+
+@see @ref window_scale
+
+
+@subsection news_33_inithint Support for initialization hints
+
+GLFW now supports setting library initialization hints with @ref glfwInitHint
+or @ref glfwInitHintString.  These must be set before initialization to take
+effect.
+
+@see @ref init_hints
+
+
+@subsection news_33_platformhints Support for platform specific hints
+
+GLFW now supports platform specific init and window hints to control system
+features that are only available on a single platform.
+
+@see @ref init_hints_osx
+@see @ref window_hints_osx
 
 @subsection news_33_joyhats Support for joystick hats
 
