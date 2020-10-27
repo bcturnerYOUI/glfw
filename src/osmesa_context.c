@@ -2,7 +2,7 @@
 // GLFW 3.3 OSMesa - www.glfw.org
 //------------------------------------------------------------------------
 // Copyright (c) 2016 Google Inc.
-// Copyright (c) 2006-2016 Camilla Löwy <elmindreda@glfw.org>
+// Copyright (c) 2016-2017 Camilla Löwy <elmindreda@glfw.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -47,7 +47,7 @@ static void makeContextCurrentOSMesa(_GLFWwindow* window)
             free(window->context.osmesa.buffer);
 
             // Allocate the new buffer (width * height * 8-bit RGBA)
-            window->context.osmesa.buffer = calloc(4, width * height);
+            window->context.osmesa.buffer = calloc(4, (size_t) width * height);
             window->context.osmesa.width  = width;
             window->context.osmesa.height = height;
         }
@@ -63,7 +63,7 @@ static void makeContextCurrentOSMesa(_GLFWwindow* window)
         }
     }
 
-    _glfwPlatformSetTls(&_glfw.context, window);
+    _glfwPlatformSetTls(&_glfw.contextSlot, window);
 }
 
 static GLFWglproc getProcAddressOSMesa(const char* procname)
@@ -113,7 +113,9 @@ GLFWbool _glfwInitOSMesa(void)
     int i;
     const char* sonames[] =
     {
-#if defined(_WIN32)
+#if defined(_GLFW_OSMESA_LIBRARY)
+        _GLFW_OSMESA_LIBRARY,
+#elif defined(_WIN32)
         "libOSMesa.dll",
         "OSMesa.dll",
 #elif defined(__APPLE__)
@@ -184,11 +186,11 @@ void _glfwTerminateOSMesa(void)
     }
 }
 
-#define setAttrib(attribName, attribValue) \
+#define setAttrib(a, v) \
 { \
-    attribs[index++] = attribName; \
-    attribs[index++] = attribValue; \
-    assert((size_t) index < sizeof(attribs) / sizeof(attribs[0])); \
+    assert(((size_t) index + 1) < sizeof(attribs) / sizeof(attribs[0])); \
+    attribs[index++] = a; \
+    attribs[index++] = v; \
 }
 
 GLFWbool _glfwCreateContextOSMesa(_GLFWwindow* window,
@@ -238,7 +240,7 @@ GLFWbool _glfwCreateContextOSMesa(_GLFWwindow* window,
         if (ctxconfig->forward)
         {
             _glfwInputError(GLFW_VERSION_UNAVAILABLE,
-                            "OSMesa: Foward-compatible contexts not supported");
+                            "OSMesa: Forward-compatible contexts not supported");
             return GLFW_FALSE;
         }
 
